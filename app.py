@@ -6,10 +6,9 @@ import numpy as np
 from PIL import Image
 import cv2
 
-def load_model():
-    global model
-    model = lm('model.h5')
-    model.make_predict_function()  
+
+model = lm('model.h5')
+model.make_predict_function()  
 
 def model_predict(img_path, model):
 
@@ -60,5 +59,4 @@ def upload():
 if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server..."
         "please wait until server has fully started"))
-    load_model()
     app.run()
