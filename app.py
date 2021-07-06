@@ -40,10 +40,10 @@ def model_predict(img_path, model):
     preds = model.predict(image)
 
     if preds[0]<0.5:
-        confidence = round(1 - np.asscalar(preds[0])) * 100
+        confidence = round((1 - np.asscalar(preds[0])) * 100, 2)
         return "Female - Confidence: " + str(confidence) + "%"
     else:
-        confidence = round(np.asscalar(preds[0])) * 100
+        confidence = round(np.asscalar(preds[0]) * 100, 2)
         return "Male - Confidence: " + str(confidence) + "%"
 
 
