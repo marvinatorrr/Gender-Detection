@@ -1,14 +1,14 @@
 from flask import Flask, request, render_template
 import os
 from werkzeug.utils import secure_filename
-import keras
+from keras.models import load_model as lm
 import numpy as np
 from PIL import Image
 import cv2
 
 def load_model():
     global model
-    model = keras.models.load_model('model.h5')
+    model = lm('model.h5')
     model.make_predict_function()  
 
 def model_predict(img_path, model):
