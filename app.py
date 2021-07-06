@@ -7,15 +7,29 @@ from PIL import Image
 import cv2
 
 
-model = lm('model.h5')
+model = lm('modelv2.h5')
 model.make_predict_function()  
 
+def get_face(img_path):
+
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    img = cv2.imread(img_path)
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray,1.1,4)
+
+    return faces
+
 def model_predict(img_path, model):
+
+    faces = get_face(img_path)
 
     image = Image.open(img_path)
 
     if image.mode != "RGB":
         image = image.convert("RGB")
+
+    for (x,y,w,h) in faces:
+        image = image.crop((x,y,x+w,y+h))
 
     image = np.asarray(image)
     image = cv2.resize(image, (64,64))
@@ -25,10 +39,12 @@ def model_predict(img_path, model):
 
     preds = model.predict(image)
 
-    if preds[0]<0:
-        return "Female"
+    if preds[0]<0.5:
+        confidence = round(1 - np.asscalar(preds[0])) * 100
+        return "Female - Confidence: " + str(confidence) + "%"
     else:
-        return "Male"
+        confidence = round(np.asscalar(preds[0])) * 100
+        return "Male - Confidence: " + str(confidence) + "%"
 
 
 app = Flask(__name__)
